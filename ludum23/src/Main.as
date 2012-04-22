@@ -14,9 +14,9 @@ package
 		
 		public function Main():void
 		{
+			//super(320, 240, MainState, 2);
 			super(640, 480, MainState, 1);
 			FlxG.debug = true;
-			//super(320, 240, MainState, 2);
 		}
 		
 	}

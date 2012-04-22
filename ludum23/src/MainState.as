@@ -23,7 +23,7 @@ package
 		
 		private const COUNT:uint = 1; //This count squared will decide the number of chunks in the universe. In a second thought, i'll stick with 1. :)
 		private const CHUNKSIZE:uint = 2048;
-		private const BMPSIZE:uint = 192;
+		private const BMPSIZE:uint = 96;
 		
 		
 		private var chunkData:Vector.<BitmapData>;
@@ -35,7 +35,7 @@ package
 		private var enemies:EnemyManager;
 		private var playaContacts:b2ContactListener;
 		private var bG:backGround;
-		private var dS:DarkMask;
+		private var dS:Vignette;
 		
 		private var frame:Vector.<FlxB2Sprite>;
 
@@ -43,6 +43,8 @@ package
 		{
 			super.create();
 			
+			Global.chunkCnt = COUNT;
+			Global.chunkSize = CHUNKSIZE;
 			Global.worldSize =  CHUNKSIZE * COUNT;
 			
 			//Set the background
@@ -56,7 +58,7 @@ package
 			world = new b2World(new b2Vec2(0, 0), true);
 			Global.world = world;
 			
-			agent = new Player(world, 500, 100);
+			agent = new Player(world, 50, 100);
 			Global.player = agent;
 
 			//testPlanet = new Planet(world, 200, -30, 320);
@@ -74,10 +76,10 @@ package
 			//add(enemies);
 			
 			// DarkFilter
-			
+			dS = new Vignette(FlxG.width, FlxG.height, Global.VGN);
 			//dS = new DarkMask();
 			//dS.scrollFactor = new FlxPoint();
-			//add(dS);
+			add(dS);
 			// Start the enemy timer
 			FlxG.camera.follow(agent.mainSprite);
 			FlxG.camera.bounds = new FlxRect(0, 0, CHUNKSIZE * COUNT, CHUNKSIZE * COUNT);
@@ -94,7 +96,12 @@ package
 		public function createChunks():void {
 			chunkData = new Vector.<BitmapData>();
 			chunks = new Vector.<Chunk>();
+			
 			chunkData.push((new Global.CNK_00_00() as BitmapAsset).bitmapData);
+			//chunkData.push((new Global.CNK_00_01() as BitmapAsset).bitmapData);
+			
+			
+			
 			var scale:Number = CHUNKSIZE / BMPSIZE;
 			
 			for (var x:int = 0; x < COUNT; x++)
@@ -105,12 +112,12 @@ package
 					var cnk:Chunk = new Chunk(topLeft);
 					
 					chunks.push(cnk);
-					if (chunkData[index] == null)
+					if (x*COUNT + y >= chunkData.length)
 						continue;
 					var bmp:BitmapData = chunkData[index];
 					var c:int = 0;
-					for (var i:int = 5; i < bmp.width; i++)
-						for (var j:int = 5; j < bmp.height; j++)
+					for (var j:int = 5; j < bmp.width; j++)
+						for (var i:int = 5; i < bmp.height; i++)
 						{
 							if (bmp.getPixel(i, j) == 0xffffff && 
 								bmp.getPixel(i - 1, j) != 0xffffff && 
@@ -121,7 +128,8 @@ package
 								var rad:uint = 1;
 								while (bmp.getPixel(i + rad, j) != 0xffffff)
 									rad++;
-								cnk.createObject(new FlxPoint(i*scale, j*scale) , rad*scale, bmp.getPixel(i,j+1));
+								cnk.createObject(new FlxPoint(i * scale, j * scale) , rad * scale, bmp.getPixel(i, j + 1));
+								//trace("added planet");
 							}
 						}
 				}

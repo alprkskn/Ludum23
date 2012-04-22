@@ -24,25 +24,31 @@ package
 		private var h:uint = Global.worldSize;
 		
 		/* Just Useless Counts*/
-		private const st01:uint = 50;
-		private const st02:uint = 100;
-		private const st03:uint = 150;
+		private const st01:uint = 50 * Global.chunkCnt;
+		private const st02:uint = 100 * Global.chunkCnt;
+		private const st03:uint = 150 * Global.chunkCnt;
 		/**********************/
 		
-		private var bG:FlxSprite;
-		private var bGSprite:FlxSprite;
-		private var bGBlur:FlxSprite;
+		private var bG:Vector.<FlxSprite>;
 		
 		[Embed(source = "graphics/star01.png")] private const STAR_01:Class;
 		[Embed(source = "graphics/star02.png")] private const STAR_02:Class;
 		
 		public function backGround() 
 		{
-			bG = new FlxSprite(0, 0);
-			bG.makeGraphic(w, h, 0xffffffff, true);
-			bG.fill(0xff111111)
-
-			add(bG);
+			bG = new Vector.<FlxSprite>();
+			for (var i:int = 0; i < Global.chunkCnt; i++)
+				for (var j:int = 0; j < Global.chunkCnt; j++)
+				{
+					var s:FlxSprite = new FlxSprite(i*Global.chunkSize, j*Global.chunkSize);
+					bG.push(s);
+					s.makeGraphic(Global.chunkSize, Global.chunkSize, 0xffffffff, true);
+					trace(w + " " + h);
+					trace(Global.chunkSize + " " + Global.chunkSize);
+					s.fill(0xff111111)
+					add(s);
+				}
+				
 			//bGBlur.pixels = bGSprite.pixels.clone();
 			for (var x:uint = 0; x < st01; x++) {
 				

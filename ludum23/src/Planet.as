@@ -23,19 +23,19 @@ package
 		private var verticalForce:b2Vec2;
 		private var horizontalForce:b2Vec2;
 		private var weight:b2Vec2;
-		private const fC:Number = 5;
+		private const fC:Number = 3;
 		private var origPixels:BitmapData;
 		
 		
 		public var label:String;
 		/*****************/
 		
-		public function Planet(world:b2World, x:int, y:int, r:int, img:Class) 
+		public function Planet(world:b2World, x:int, y:int, r:int, img:Class, st:Boolean = false) 
 		{
 			/* put the main body */
 			super(world, x, y);
-			height = r-20;
-			width = r-20;
+			height = r;
+			width = r;
 			
 			var scale:Number = r / (new img() as BitmapAsset).bitmapData.width;
 			var matrix:Matrix = new Matrix();
@@ -45,8 +45,10 @@ package
 			spr.draw((new img() as BitmapAsset).bitmapData, matrix);
 			
 			//pl.scale = new FlxPoint(r / 64, r / 64);
-
-			b2Type = b2Body.b2_dynamicBody;
+			if(!st)
+				b2Type = b2Body.b2_dynamicBody;
+			else
+				b2Type = b2Body.b2_staticBody;
 			createCircle();
 			
 			/* TODO: play with these to improve game feel*/
@@ -84,6 +86,10 @@ package
 		
 		public function thrustLeft():void {
 			body.ApplyForce(horizontalForce.GetNegative(), forcePoint);
+		}
+		public function push(vec:b2Vec2):void {
+			//trace( vec.Length());
+			body.ApplyForce(vec, forcePoint);
 		}
 		
 		override public function draw():void 

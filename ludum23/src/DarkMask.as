@@ -62,7 +62,7 @@ package
 		{
 			super.update();
 			var dist:FlxPoint = FlxG.getDistance(Global.dasSun, (obj as Planet));
-			alpha = (dist.magnitude - 200) / 250;
+			alpha = (dist.magnitude - 200) / 500;
 			var angle:Number = Math.atan2(dist.y, dist.x);
 			angle -= (obj as Planet).body.GetAngle();
 			body.SetAngle(angle);
