@@ -2,6 +2,7 @@ package
 {
 	import flash.display.Sprite;
 	import flash.events.Event;
+	import org.flixel.FlxG;
 	import org.flixel.FlxGame;
 	
 	/**
@@ -13,8 +14,9 @@ package
 		
 		public function Main():void
 		{
-			trace("eben");
 			super(640, 480, MainState, 1);
+			FlxG.debug = true;
+			//super(320, 240, MainState, 2);
 		}
 		
 	}

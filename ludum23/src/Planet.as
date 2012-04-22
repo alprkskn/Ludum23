@@ -9,6 +9,7 @@ package
 	import org.flixel.FlxPoint;
 	import Box2D.Common.Math.b2Vec2;
 	import Box2D.Dynamics.b2Body;
+	import flash.geom.Rectangle;
 	/**
 	 * ...
 	 * @author Alper Keskin
@@ -23,23 +24,25 @@ package
 		private var horizontalForce:b2Vec2;
 		private var weight:b2Vec2;
 		private const fC:Number = 5;
+		private var origPixels:BitmapData;
+		
 		
 		public var label:String;
 		/*****************/
 		
-		public function Planet(world:b2World, x:int, y:int, r:int) 
+		public function Planet(world:b2World, x:int, y:int, r:int, img:Class) 
 		{
 			/* put the main body */
 			super(world, x, y);
-			height = r;
-			width = r;
+			height = r-20;
+			width = r-20;
 			
-			var scale:Number = r / (new Global.GLOBEIMG() as BitmapAsset).bitmapData.width;
+			var scale:Number = r / (new img() as BitmapAsset).bitmapData.width;
 			var matrix:Matrix = new Matrix();
 			matrix.scale(scale, scale);
 			
 			spr = new BitmapData(r, r,true, 0);
-			spr.draw((new Global.GLOBEIMG() as BitmapAsset).bitmapData, matrix);
+			spr.draw((new img() as BitmapAsset).bitmapData, matrix);
 			
 			//pl.scale = new FlxPoint(r / 64, r / 64);
 
@@ -52,11 +55,13 @@ package
 			verticalForce = new b2Vec2(0, 9.8 * body.GetMass() * fC);
 			weight = new b2Vec2(0, 9.8 * body.GetMass() * (fC-2));
 			body.SetLinearDamping(2);
+			body.SetAngularDamping(2);
 			/*********************************************/
 			
-			body.SetFixedRotation(true);
+			//body.SetFixedRotation(true);
 			body.SetUserData(this);
-			
+			origPixels = new BitmapData(spr.width, spr.height);
+			origPixels.copyPixels(spr, spr.rect,origPixels.rect.topLeft);
 			pixels = spr;
 		}
 		
@@ -80,6 +85,13 @@ package
 		public function thrustLeft():void {
 			body.ApplyForce(horizontalForce.GetNegative(), forcePoint);
 		}
+		
+		override public function draw():void 
+		{
+			this.pixels.copyPixels(origPixels, origPixels.rect, pixels.rect.topLeft);
+			//pixels = origPixels.clone();
+			super.draw();
+		}
 	}
-
+	
 }

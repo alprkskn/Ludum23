@@ -1,10 +1,16 @@
 package  
 {
+	import flash.display.Bitmap;
 	import flash.display.BitmapData;
+	import flash.filters.BitmapFilter;
+	import flash.filters.BlurFilter;
+	import flash.geom.Point;
 	import mx.core.BitmapAsset;
+	import org.flixel.FlxBasic;
 	import org.flixel.FlxPoint;
 	import org.flixel.FlxSprite;
 	import org.flixel.FlxGroup;
+	import org.flixel.FlxTween;
 	
 	/**
 	 * ...
@@ -12,44 +18,52 @@ package
 	 */
 	public class backGround extends FlxGroup 
 	{
-		[Embed(source = "graphics/skeleBack.jpg")] private const BACKGROUND:Class;
+		//[Embed(source = "graphics/skeleBack.jpg")] private const BACKGROUND:Class;
 		
-		private var bgLeft:FlxSprite;
-		private var bgCurr:FlxSprite;
-		private var bgRight:FlxSprite;
+		private var w:uint = Global.worldSize;
+		private var h:uint = Global.worldSize;
 		
-		private var w:uint;
-		private var h:uint;
+		/* Just Useless Counts*/
+		private const st01:uint = 50;
+		private const st02:uint = 100;
+		private const st03:uint = 150;
+		/**********************/
 		
-		private const BSPEED:uint = 10;
+		private var bG:FlxSprite;
+		private var bGSprite:FlxSprite;
+		private var bGBlur:FlxSprite;
+		
+		[Embed(source = "graphics/star01.png")] private const STAR_01:Class;
+		[Embed(source = "graphics/star02.png")] private const STAR_02:Class;
 		
 		public function backGround() 
 		{
-			super(3);
-			w = (new BACKGROUND() as BitmapAsset).width;
-			h = (new BACKGROUND() as BitmapAsset).height;
-			bgLeft = new FlxSprite( -(w), 0, BACKGROUND);
-			bgCurr = new FlxSprite( 0, 0, BACKGROUND);
-			bgRight = new FlxSprite(w, 0, BACKGROUND);
+			bG = new FlxSprite(0, 0);
+			bG.makeGraphic(w, h, 0xffffffff, true);
+			bG.fill(0xff111111)
+
+			add(bG);
+			//bGBlur.pixels = bGSprite.pixels.clone();
+			for (var x:uint = 0; x < st01; x++) {
+				
+				add(new FlxSprite(w * Math.random(), h * Math.random(), STAR_01));
+			}
 			
-			add(bgLeft);
-			add(bgCurr);
-			add(bgRight);
+			for (x = 0; x < st02; x++) {
+				
+				add(new FlxSprite(w * Math.random(), h * Math.random(), STAR_02));
+			}
+			
 		}
 		
 		override public function update():void 
 		{
 			super.update();
-			bgLeft.x -= BSPEED;
-			bgCurr.x -= BSPEED;
-			bgRight.x -= BSPEED;
-			if (bgLeft.x < -380)
+			if (Math.random() > 0.75)
 			{
-				var temp:FlxSprite = bgLeft;
-				bgLeft = bgCurr;
-				bgCurr = bgRight;
-				bgRight = temp;
-				bgRight.x = bgCurr.x + 380;
+				var t:FlxBasic = getRandom(1);
+				if(t is FlxSprite)
+					FlxTween.fromTo((t as FlxSprite), 0.4, { alpha:0 }, { alpha:1 } );
 			}
 		}
 		

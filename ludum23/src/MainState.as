@@ -21,9 +21,10 @@ package
 	public class MainState extends FlxB2State 
 	{
 		
-		private const COUNT:uint = 1; //This count squared will decide the number of chunks in the universe
-		private const CHUNKSIZE:uint = 960;
-		private const BMPSIZE:uint = 96;
+		private const COUNT:uint = 1; //This count squared will decide the number of chunks in the universe. In a second thought, i'll stick with 1. :)
+		private const CHUNKSIZE:uint = 2048;
+		private const BMPSIZE:uint = 192;
+		
 		
 		private var chunkData:Vector.<BitmapData>;
 		private var chunks:Vector.<Chunk>;
@@ -42,20 +43,25 @@ package
 		{
 			super.create();
 			
+			Global.worldSize =  CHUNKSIZE * COUNT;
+			
 			//Set the background
 			FlxG.bgColor = 0xFFEBE0E0;
 			//add(new backGround());
+			
+			
 			
 			
 			//Populate the world
 			world = new b2World(new b2Vec2(0, 0), true);
 			Global.world = world;
 			
-			agent = new Player(world, 0, 00);
+			agent = new Player(world, 500, 100);
 			Global.player = agent;
 
 			//testPlanet = new Planet(world, 200, -30, 320);
-			
+			bG = new backGround();
+			add(bG);
 			createChunks();
 			
 			/*enemies = new EnemyManager();
@@ -68,6 +74,9 @@ package
 			//add(enemies);
 			
 			// DarkFilter
+			
+			//dS = new DarkMask();
+			//dS.scrollFactor = new FlxPoint();
 			//add(dS);
 			// Start the enemy timer
 			FlxG.camera.follow(agent.mainSprite);
@@ -118,6 +127,11 @@ package
 				}
 		}
 		
+		override public function update():void 
+		{
+			super.update();
+			//trace(dist);
+		}
 		
 	}
 

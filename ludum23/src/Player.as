@@ -5,6 +5,7 @@ package
 	import flash.geom.Rectangle;
 	import org.flixel.FlxGroup;
 	import org.flixel.FlxG;
+	import org.flixel.FlxSprite;
 	
 	/**
 	 * ...
@@ -13,17 +14,21 @@ package
 	public class Player extends FlxGroup 
 	{
 		public var mainSprite:Planet;
+		public var shadow:DarkMask;
 		public var bM:BulletManager;
 
 		public function Player(world:b2World, x:int, y:int) 
 		{
-			mainSprite = new Planet(world, x, y, 16);
-			mainSprite.pixels.colorTransform(	new Rectangle(0, 0, mainSprite.width, mainSprite.height),
-												new ColorTransform(0.6, 0.3, 0.7));
+			mainSprite = new Planet(world, x, y, 64, Global.EARTHIMG);
+			shadow = new DarkMask(x, y, mainSprite);
 			bM = new BulletManager();
+			mainSprite.label = "Earth";
 			add(mainSprite);
+			add(shadow);
+			//remove(shadow);
 			add(bM);
 		}
+		
 		override public function update():void 
 		{
 			
@@ -46,6 +51,10 @@ package
 			if (FlxG.keys.LEFT) {
 				mainSprite.thrustLeft();
 				//mainSprite.body.ApplyForce(mainSprite.horizontalForce.GetNegative(), mainSprite.forcePoint);
+			}
+			
+			if (FlxG.keys.SPACE) {
+				//remove(shadow);
 			}
 			
 		}
